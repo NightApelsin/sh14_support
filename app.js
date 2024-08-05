@@ -1,8 +1,9 @@
-import { PORT, TOKEN } from './config.js'
+ï»¿import { PORT, TOKEN } from './config.js'
 import express from 'express'
 import {Telegraf} from 'telegraf'
 import { getMainMenu } from './keyboard.js'
-
+import { ReportDataModel } from './reports/model.js'
+import { createReport } from './bot_com/reportCreation.js'
 
 const app = express()
 const bot = new Telegraf(TOKEN)
@@ -14,9 +15,18 @@ bot.hears('/motivation', ctx => {
     ctx.replyWithPhoto(
         'https://img2.goodfon.ru/wallpaper/nbig/7/ec/justdoit-dzhastduit-motivaciya.jpg',
         {
-            caption: 'Íå âçäóìàé ñäàâàòüñÿ!'
+            caption: 'ÐÐµ ÑÐ´Ð°Ð²Ð°Ð¹ÑÑ!!'
         }
     )
 })
+
+
+bot.hears('/ÐžÐ±Ñ€Ð°Ñ‰ÐµÐ½Ð¸Ðµ Ð² Ñ‚ÐµÑ… Ð¿Ð¾Ð´Ð´ÐµÑ€Ð¶ÐºÑƒ', ctx=>{
+	createReport(ctx)
+})
+
+
 bot.launch()
-app.listen(PORT, () => console.log(`My server is running on http://${PORT}`))
+
+
+app.listen(PORT, () => console.log(`My server is running on port ${PORT}`))
