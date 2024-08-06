@@ -59,7 +59,7 @@ this.answerReport.name,
 this.answerReport.phone
 ];
 await client.query(query, values);
-this.ctx.reply('Отчет успешно создан и сохранен в базе данных.');
+this.ctx.reply('Отчет успешно создан и сохранен в базе данных. С вами свяжуться в ближайшее время.');
 } catch (err) {
 console.error('Ошибка при сохранении отчета в базу данных:', err);
 this.ctx.reply('Произошла ошибка при сохранении отчета. Попробуйте позже.');
