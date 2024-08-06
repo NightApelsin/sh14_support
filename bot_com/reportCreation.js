@@ -1,76 +1,70 @@
-﻿
+﻿import pg from 'pg'
+const {Client} = pg
 
+export class CreateReport {
+constructor(bot, ctx, answerReportInput, dbConfig) {
+this.answerReport = answerReportInput;
+this.bot = bot;
+this.ctx = ctx;
+this.steps = [
+{ field: 'problem', question: 'Опишите проблему, с которой вы столкнулись (коротко)' },
+{ field: 'description', question: 'Расскажите подробнее, что случилось' },
+{ field: 'kabinet', question: 'Введите номер кабинета' },
+{ field: 'name', question: 'Введите ваше ФИО' },
+{ field: 'phone', question: 'Введите контактную информацию (номер мобильного телефона)' },
+];
+this.currentStep = 0;
+this.dbConfig = dbConfig;
+this.init();
+}
 
-export class CreateReport{
-	constructor(bot, ctx, answerReportInput){
-		this.answerReport = answerReportInput
-		this.bot = bot
-		this.ctx = ctx
-		console.log(JSON.stringify(this.answerReport))
-		return this.addParams()
-	}
-	addParams(){
-		this.ctx.reply(`Порядок заполнения формы запроса
-    1. Короткое название проблемы
-    2. Более подробное описание проблемы
-    3. Номер кабинета в котором произошла проблема
-    4. Ваше ФИО
-    5. Контактна информация (номер мобильного телефна)`)
-		this.addProblem()		
-		this.addProblem()
-		this.addKabinet()
-		this.addName()
-		this.addPhone()
-		return this.answerReport
-	}
-	addProblem(){
-		this.ctx.reply('Опишите проблему с которой вы столкнулись (коротко)').then(async ()=>{
+init() {
+this.bot.on('text', (ctx) => this.handleResponse(ctx));
+this.askQuestion();
+}
 
-			await this.bot.on('text', (ctx)=>{
-				this.answerReport.problem = ctx.message.text
-			})
-		}).catch(err=>{
-			console.log(new Error(err))
-		})
-	}
-	addDesc(){
-		this.ctx.reply('Расскажите подробней что случилось').then(()=>{
+askQuestion() {
+if (this.currentStep < this.steps.length) {
+this.ctx.reply(this.steps[this.currentStep].question);
+} else {
+this.finalizeReport();
+}
+}
 
-			this.bot.on('text', (ctx)=>{
-				this.answerReport.description = ctx.message.text
-			})
-		}).catch(err=>{
-			console.log(new Error(err))
-		})
-	}
-	addKabinet(){
-		this.ctx.reply('Введите название кабинета').then(()=>{
+handleResponse(ctx) {
+if (this.currentStep < this.steps.length) {
+const step = this.steps[this.currentStep];
+this.answerReport[step.field] = ctx.message.text;
+this.currentStep++;
+this.askQuestion();
+}
+}
 
-			this.bot.on('text', (ctx)=>{
-				this.answerReport.kabinet = ctx.message.text
-			})
-		}).catch(err=>{
-			console.log(new Error(err))
-		})
-	}
-	addName(){
-		this.ctx.reply('Введите ваше ФИО').then(()=>{
+async finalizeReport() {
+console.log('Отчет создан:', this.answerReport);
 
-			this.bot.on('text', (ctx=>{
-				this.answerReport.name = ctx.message.text
-			}))
-		}).catch(err=>{
-			console.log(new Error(err))
-		})
-	}
-	addPhone(){
-		this.ctx.reply('Введите контактную информацию (номер мобильного телефона)').then(()=>{
-
-			this.bot.on('text', (ctx)=>{
-				this.answerReport.phone = ctx.message.text
-			})
-		}).catch(err=>{
-			console.log(new Error(err))
-		})
-	}
+// Сохранение отчета в базу данных
+const client = new Client(this.dbConfig);
+try {
+await client.connect();
+const query = `
+INSERT INTO report_requests (problem, description, kabinet, name, phone)
+VALUES ($1, $2, $3, $4, $5)
+`;
+const values = [
+this.answerReport.problem,
+this.answerReport.description,
+this.answerReport.kabinet,
+this.answerReport.name,
+this.answerReport.phone
+];
+await client.query(query, values);
+this.ctx.reply('Отчет успешно создан и сохранен в базе данных.');
+} catch (err) {
+console.error('Ошибка при сохранении отчета в базу данных:', err);
+this.ctx.reply('Произошла ошибка при сохранении отчета. Попробуйте позже.');
+} finally {
+await client.end();
+}
+}
 }
