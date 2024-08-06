@@ -3,11 +3,13 @@ import express from 'express'
 import {Telegraf} from 'telegraf'
 import { getMainMenu } from './keyboard.js'
 import { ReportDataModel } from './reports/model.js'
-import { createReport } from './bot_com/reportCreation.js'
+import { CreateReport } from './bot_com/reportCreation.js'
 
 const app = express()
 const bot = new Telegraf(TOKEN)
 bot.start(ctx => {
+
+	console.log('asd')
     ctx.replyWithHTML(`
 		<b>Добро пожаловать в канал поддержки МБОУ СОШ №14 города Кирова</b>
 
@@ -24,8 +26,15 @@ bot.hears('/motivation', ctx => {
 })
 
 
-bot.hears('/техническая поддержка', ctx=>{
-	createReport(bot, ctx)
+bot.hears('/техническая поддержка', async ctx=>{
+	let obj = {
+		problem:"",
+		description:"",
+		name:"",
+		kabinet:"",
+		phone:""
+	}
+	let report = new CreateReport(bot, ctx, obj)
 })
 
 
