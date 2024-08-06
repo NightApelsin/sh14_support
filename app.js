@@ -8,7 +8,10 @@ import { createReport } from './bot_com/reportCreation.js'
 const app = express()
 const bot = new Telegraf(TOKEN)
 bot.start(ctx => {
-    ctx.reply('Welcome, bro', getMainMenu())
+    ctx.replyWithHTML(`
+		<b>Добро пожаловать в канал поддержки МБОУ СОШ №14 города Кирова</b>
+
+		Для того чтобы оставить запрос в техничесую поддержку отправте ' <i>/техническая поддержка</i> ' или нажмите на соответствующую кнопку в открывающейся клавиатуре`, getMainMenu())
 })
 
 bot.hears('/motivation', ctx => {
@@ -21,8 +24,8 @@ bot.hears('/motivation', ctx => {
 })
 
 
-bot.hears('/Обращение в тех поддержку', ctx=>{
-	createReport(ctx)
+bot.hears('/техническая поддержка', ctx=>{
+	createReport(bot, ctx)
 })
 
 
