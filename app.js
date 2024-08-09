@@ -1,6 +1,5 @@
 ﻿import {
 	PORT,
-	sys_admin_token,
 	TOKEN,
 	sys_admin_name
 } from './config.js'
@@ -13,7 +12,8 @@ import {
 	getMainMenu
 } from './keyboard.js'
 import {
-	createHash
+	createHash,
+	isAdmin
 } from './Controllers/hashing.js'
 import {
 	CreateReport
@@ -33,15 +33,13 @@ const bot = new Telegraf(TOKEN, {
 	polling: {
 		interval: 300,
 		autoStart: true
-	},
-	isAdmin: false
+	}
 })
 bot.on("polling_error", err => console.log(err.data.error.message));
 bot.start(ctx => {
 	console.log(createHash(ctx.message.from.id.toString()))
 	console.log(ctx.message.from.id)
-	if (createHash(ctx.message.from.id.toString()) === sys_admin_token) {
-		bot.isAdmin = true
+	if (isAdmin(ctx.message.from.id.toString())) {
 		console.log('is admin')
 		ctx.replyWithHTML(`Здравствуйте <b>${sys_admin_name}</b>
 
