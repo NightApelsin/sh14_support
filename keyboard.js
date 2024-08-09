@@ -1,13 +1,15 @@
-﻿import {Markup} from 'telegraf'
+﻿import {
+	Markup
+} from 'telegraf'
 
 export function getMainMenu() {
-    return Markup.keyboard([
-        ['/start','/техническая поддержка','/motivation']
-    ]).resize()
+	return Markup.keyboard([
+		['/start', '/техническая поддержка', '/motivation']
+	]).resize()
 
 }
-export function getAdminMenu(){
+export function getAdminMenu() {
 	return Markup.keyboard([
-		'/restart','/reports','/newNews'
+		'/restart', '/reports', '/newNews'
 	]).resize()
 }
