@@ -4,5 +4,5 @@ export function createHash(input) {
 	return crypto.createHash('sha256').update(input).digest('hex')
 }
 export function isAdmin(input){
-	return createHash(input)===sys_admin_token
+	return createHash(input.toString())===sys_admin_token
 }

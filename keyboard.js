@@ -10,6 +10,6 @@ export function getMainMenu() {
 }
 export function getAdminMenu() {
 	return Markup.keyboard([
-		'/restart', '/reports', '/newNews'
+		'/restart', '/reports', '/newNews', '/техническая поддержка'
 	]).resize()
 }

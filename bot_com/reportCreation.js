@@ -1,5 +1,5 @@
 ﻿export class CreateReport {
-	constructor(bot, ctx, answerReportInput, dbConfig) {
+	constructor(bot, ctx, answerReportInput) {
 		this.answerReport = answerReportInput;
 		this.bot = bot;
 		this.ctx = ctx;
@@ -25,7 +25,6 @@
 			},
 		];
 		this.currentStep = 0;
-		this.dbConfig = dbConfig;
 		this.init();
 	}
 

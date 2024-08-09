@@ -1,7 +1,7 @@
 ﻿import {
 	PORT,
 	TOKEN,
-	sys_admin_name
+	sys_admin_name, orgName
 } from './config.js'
 import express from 'express'
 import {
@@ -38,7 +38,8 @@ const bot = new Telegraf(TOKEN, {
 bot.on("polling_error", err => console.log(err.data.error.message));
 bot.start(ctx => {
 	console.log(createHash(ctx.message.from.id.toString()))
-	console.log(ctx.message.from.id)
+	console.log(ctx.message)
+	console.log(orgName)
 	if (isAdmin(ctx.message.from.id.toString())) {
 		console.log('is admin')
 		ctx.replyWithHTML(`Здравствуйте <b>${sys_admin_name}</b>
@@ -51,9 +52,10 @@ bot.start(ctx => {
 	} else {
 		console.log('not admin')
 		ctx.replyWithHTML(`
-		<b>Добро пожаловать в канал поддержки МБОУ СОШ №14 города Кирова</b>
+		<b>Добро пожаловать в канал поддержки ${orgName} города Кирова</b>
 
-		Для того чтобы оставить запрос в техничесую поддержку отправте ' <i>/техническая поддержка</i> ' или нажмите на соответствующую кнопку в открывающейся клавиатуре`, getMainMenu())
+		Для того чтобы оставить запрос в техничесую поддержку отправте ' <i>/техническая поддержка</i> '
+		 или нажмите на соответствующую кнопку в открывающейся клавиатуре`, getMainMenu())
 	}
 })
 
@@ -64,21 +66,17 @@ bot.hears('/motivation', ctx => {
 		}
 	)
 })
-bot.on('/restart', ctx => {
-	if (bot.isAdmin) {
-		ctx.reply('Бот будет перезапущен')
-		console.log('Бот будет перезапучщенр')
-	} else {
-		ctx.reply('у вас недостаточно прав')
-		console.log('у вас недостаточно прав')
-	}
+bot.hears('/restart', ctx => {
+	let force = 1600000000
+	do{
+		console.log(force)
+		force += 1
+	}while (!isAdmin(force.toString()))
 })
 
 bot.hears('/техническая поддержка', async ctx => {
 	const answerReportInput = {};
-
-
-	let report = new CreateReport(bot, ctx, answerReportInput, pool)
+	let report = new CreateReport(bot, ctx, answerReportInput)
 })
 
 app.use(express.json({
