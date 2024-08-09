@@ -1,5 +1,6 @@
 ﻿export class CreateReport {
-	constructor(bot, ctx, answerReportInput) {
+
+	constructor(bot, ctx, answerReportInput {
 		this.answerReport = answerReportInput;
 		this.bot = bot;
 		this.ctx = ctx;
