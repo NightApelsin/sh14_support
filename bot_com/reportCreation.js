@@ -1,5 +1,4 @@
-﻿import pg from 'pg'
-const {Client} = pg
+﻿
 
 export class CreateReport {
 constructor(bot, ctx, answerReportInput, dbConfig) {
@@ -44,27 +43,28 @@ async finalizeReport() {
 console.log('Отчет создан:', this.answerReport);
 
 // Сохранение отчета в базу данных
-const client = new Client(this.dbConfig);
+
 try {
-await client.connect();
-const query = `
-INSERT INTO report_requests (problem, description, kabinet, name, phone)
-VALUES ($1, $2, $3, $4, $5)
-`;
-const values = [
-this.answerReport.problem,
-this.answerReport.description,
-this.answerReport.kabinet,
-this.answerReport.name,
-this.answerReport.phone
-];
-await client.query(query, values);
+
+const values = {
+problem:this.answerReport.problem,
+description:this.answerReport.description,
+kabinet:this.answerReport.kabinet,
+name:this.answerReport.name,
+phone:this.answerReport.phone,
+user_id:this.ctx.message.from.id
+};
+let request = await fetch('http://localhost:3000/createRep',{
+	method:"POST",
+	headers:{
+		"Content-Type":"application/json"
+	},
+	body:JSON.stringify(values)
+})
 this.ctx.reply('Отчет успешно создан и сохранен в базе данных. С вами свяжуться в ближайшее время.');
 } catch (err) {
 console.error('Ошибка при сохранении отчета в базу данных:', err);
 this.ctx.reply('Произошла ошибка при сохранении отчета. Попробуйте позже.');
-} finally {
-await client.end();
-}
+} 
 }
 }

@@ -6,3 +6,8 @@ export function getMainMenu() {
     ]).resize()
 
 }
+export function getAdminMenu(){
+	return Markup.keyboard([
+		'/restart','/reports','/newNews'
+	]).resize()
+}

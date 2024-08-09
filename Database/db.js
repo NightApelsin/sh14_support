@@ -4,8 +4,8 @@ const { Pool } = pg
 export const pool = new Pool({
   host: 'localhost',
   user: 'sh14_admin',
-  database:'sh14',
-  password:'1423',
+  database:'sh14_support',
+  password:'20140101wasd',
   port:5432,
   max: 20,
   idleTimeoutMillis: 30000,
